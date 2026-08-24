@@ -34,6 +34,8 @@ public/
   icons/                  färdiggenererade ikoner
 scripts/
   generate-icons.mjs      renderar om ikonerna från assets/icon.svg
+  video-candidates.js     framsökta kandidatvideor, overifierade
+  pick-videos.mjs         provar kandidaterna och skriver src/videos.js
   verify-videos.mjs       kontrollerar video-id mot YouTube
 src/
   main.jsx                startpunkt, registrerar service workern
@@ -71,11 +73,37 @@ Vill du nollställa: töm webbplatsens data i webbläsaren, eller kör
 ## Fylla i videor
 
 `src/videos.js` mappar varje teknik till ett YouTube-id. **Alla tolv är i
-dagsläget `null`**, eftersom den här utvecklingsmiljön inte har nätåtkomst till
-YouTube och inget id därför har kunnat verifieras. Appen fungerar ändå: en
-teknik utan id visar en sökläk till YouTube i stället för en inbäddad spelare.
+dagsläget `null`**, eftersom miljön appen byggdes i inte når YouTube och inget
+id därför har kunnat verifieras. Appen fungerar ändå: en teknik utan id visar
+en sökläk till YouTube i stället för en inbäddad spelare.
 
-Så här fyller du i dem:
+### Snabbaste vägen: låt skriptet välja
+
+`scripts/video-candidates.js` innehåller framsökta kandidatvideor per teknik,
+mellan fyra och fem stycken, med demoserier överst. De är **inte** verifierade.
+Kör:
+
+```bash
+npm run pick-videos
+```
+
+Skriptet provar kandidaterna i tur och ordning och skriver in det första id som
+klarar alla tre kraven: videon finns, är publik och tillåter inbäddning. Övriga
+blir `null`. Det skriver ut titel och kanal för varje vald video, så titta
+igenom listan innan du committar, ett id kan vara tekniskt giltigt men ändå
+vara en dålig demonstration.
+
+```bash
+npm run pick-videos -- --dry    # visa bara vad som skulle väljas
+npm run pick-videos -- --keep   # rör inte tekniker som redan har ett id
+```
+
+Skriptet vägrar skriva om det inte fick ett enda riktigt svar från YouTube, så
+en blockerad brandvägg kan inte råka nolla en fungerande lista. Vill du styra
+valet själv lägger du in ditt eget id överst i teknikens lista i
+`scripts/video-candidates.js`.
+
+### Fylla i för hand
 
 1. Leta upp en bra demonstrationsvideo. Använd helst Kodokans officiella kanal
    (KODOKANJUDOInstitute), till exempel serien **KODOKAN x IJF ACADEMY 100

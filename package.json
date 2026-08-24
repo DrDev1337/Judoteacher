@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "icons": "node scripts/generate-icons.mjs",
-    "verify-videos": "node scripts/verify-videos.mjs"
+    "verify-videos": "node scripts/verify-videos.mjs",
+    "pick-videos": "node scripts/pick-videos.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
