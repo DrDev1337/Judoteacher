@@ -149,9 +149,13 @@ Du behöver inte ändra någon sökväg när du byter värd.
    `https://drdev1337.github.io/Judoteacher/` för det här repot.
 
 Workflowen kör `npm ci` och `npm run build` på Node 20 och laddar upp `dist`.
-Den triggar på `main`, `master` och på utvecklingsgrenen, plus manuellt.
+Den triggar på push till `main` och går även att köra manuellt.
 `public/.nojekyll` följer med i bygget så att Pages inte kör innehållet genom
 Jekyll.
+
+Publiceringen sker från `main`. Miljön `github-pages` släpper bara igenom de
+grenar som står under **Settings, Environments, github-pages**, så en deploy
+från en utvecklingsgren avvisas innan jobbet startar.
 
 Sätter du en egen domän under **Settings, Pages** fungerar bygget som det är,
 eftersom sökvägarna är relativa.

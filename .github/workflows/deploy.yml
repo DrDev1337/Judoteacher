@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-      - master
-      - claude/new-session-xxs8wr
   workflow_dispatch:
 
 # Behövs för att deploy-jobbet ska få publicera till Pages.
