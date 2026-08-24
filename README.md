@@ -79,9 +79,11 @@ en sökläk till YouTube i stället för en inbäddad spelare.
 
 ### Snabbaste vägen: låt skriptet välja
 
-`scripts/video-candidates.js` innehåller framsökta kandidatvideor per teknik,
-mellan fyra och fem stycken, med demoserier överst. De är **inte** verifierade.
-Kör:
+`scripts/video-candidates.js` innehåller fem till sex framsökta kandidater per
+teknik. Överst ligger Kodokans officiella serie **KODOKAN x IJF ACADEMY 100
+Techniques**, som finns för elva av de tolv teknikerna, därefter en
+sammanhängande demoserie och sedan övriga instruktionsvideor. Kandidaterna är
+**inte** verifierade. Kör:
 
 ```bash
 npm run pick-videos
@@ -100,8 +102,14 @@ npm run pick-videos -- --keep   # rör inte tekniker som redan har ett id
 
 Skriptet vägrar skriva om det inte fick ett enda riktigt svar från YouTube, så
 en blockerad brandvägg kan inte råka nolla en fungerande lista. Vill du styra
-valet själv lägger du in ditt eget id överst i teknikens lista i
+valet själv, till exempel använda de videor din klubb eller Svenska
+Judoförbundet länkar, lägger du in det id:t överst i teknikens lista i
 `scripts/video-candidates.js`.
+
+Två tekniker är inte egna tekniker bland Kodokans 100: `mune-gatame` räknas som
+en variant i familjen yoko-shiho-gatame, och `eri-seoi-nage` är en greppvariant
+av seoi-nage. För dem ligger teknikspecifika videor först, eftersom rätt teknik
+väger tyngre än rätt källa, och den närmaste officiella sist i listan.
 
 ### Fylla i för hand
 
