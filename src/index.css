@@ -1,0 +1,55 @@
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #0d111e;
+  color: #e8ecf7;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior-y: none;
+}
+
+#root { min-height: 100vh; }
+
+button { font-family: inherit; }
+
+a { color: #f5c518; }
+
+::selection { background: rgba(245, 197, 24, 0.3); }
+
+/* Flashcard flip. Disabled under prefers-reduced-motion, the card then
+   swaps face instantly instead of rotating. */
+.jf-scene { perspective: 1200px; }
+
+.jf-card {
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.jf-card.jf-flipped { transform: rotateY(180deg); }
+
+.jf-face {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.jf-back { transform: rotateY(180deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .jf-card { transition: none; transform: none !important; }
+  .jf-face { backface-visibility: visible; -webkit-backface-visibility: visible; }
+  .jf-back { transform: none; }
+  .jf-reduced-hidden { display: none !important; }
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+.jf-scroll-x {
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.jf-scroll-x::-webkit-scrollbar { display: none; }
