@@ -9,7 +9,7 @@
 //   3. Kan du inte verifiera en bra inbäddningsbar video: lämna null.
 //      Appen visar då i stället en sökläk till YouTube. Gissa aldrig ett id.
 export const VIDEOS = {
-  "o-soto-otoshi": null,
+  "o-soto-otoshi": "2DsVvDw7b8g",
   "o-uchi-gari": null,
   "o-goshi": null,
   "kuzure-kesa-gatame": null,
