@@ -10,8 +10,11 @@
 //
 // Kör: npm run pick-videos
 // Flaggor:
-//   --keep    rör inte tekniker som redan har ett id i src/videos.js
-//   --dry     skriv ingenting, visa bara vad som skulle väljas
+//   --keep        rör inte tekniker som redan har ett id i src/videos.js
+//   --dry         skriv ingenting, visa bara vad som skulle väljas
+//   --unverified  hoppa över kontrollen och ta första kandidaten rakt av.
+//                 Bara för att snabbt kunna ögna igenom alla tolv i appen.
+//                 Kör alltid npm run verify-videos efteråt.
 //
 // Kräver nätåtkomst till youtube.com. Skriptet vägrar skriva om det inte
 // fick ett enda svar därifrån, så en blockerad brandvägg kan inte råka
@@ -26,6 +29,7 @@ const TARGET = join(ROOT, 'src', 'videos.js');
 const args = new Set(process.argv.slice(2));
 const KEEP = args.has('--keep');
 const DRY = args.has('--dry');
+const UNVERIFIED = args.has('--unverified');
 
 const { VIDEOS: CURRENT } = await import(TARGET);
 
@@ -74,7 +78,36 @@ async function probe(id) {
   return { ok: true, title: meta.title, by: meta.author_name };
 }
 
+function writeOut(map) {
+  if (DRY) {
+    console.log('--dry angavs, src/videos.js lämnas orörd.');
+    return;
+  }
+  const header = readFileSync(TARGET, 'utf8').split('export const VIDEOS')[0];
+  const body = Object.keys(CANDIDATES)
+    .map((k) => `  ${JSON.stringify(k)}: ${map[k] ? JSON.stringify(map[k]) : 'null'},`)
+    .join('\n');
+  writeFileSync(TARGET, `${header}export const VIDEOS = {\n${body}\n};\n`);
+  console.log('Skrev src/videos.js. Titta igenom titlarna ovan innan du committar.');
+}
+
 const chosen = {};
+
+if (UNVERIFIED) {
+  console.log('--unverified: tar första kandidaten utan att kontrollera något.\n');
+  for (const [key, list] of Object.entries(CANDIDATES)) {
+    chosen[key] = KEEP && CURRENT[key] ? CURRENT[key] : list[0]?.[0] ?? null;
+    console.log(`  ${key.padEnd(20)} ${chosen[key] ?? 'null'}  ${list[0]?.[1] ?? ''}`);
+  }
+  writeOut(chosen);
+  console.warn(
+    '\nVARNING: ingenting är verifierat. Videor kan saknas eller ha\n' +
+      'inbäddning avstängd. Kör npm run verify-videos, eller npm run\n' +
+      'pick-videos utan flaggan, innan det här går i skarp drift.'
+  );
+  process.exit(0);
+}
+
 for (const [key, list] of Object.entries(CANDIDATES)) {
   if (KEEP && CURRENT[key]) {
     chosen[key] = CURRENT[key];
@@ -115,17 +148,5 @@ if (hits === 0) {
   process.exit(1);
 }
 
-const header = readFileSync(TARGET, 'utf8').split('export const VIDEOS')[0];
-const body = Object.keys(CANDIDATES)
-  .map((k) => `  ${JSON.stringify(k)}: ${chosen[k] ? JSON.stringify(chosen[k]) : 'null'},`)
-  .join('\n');
-const out = `${header}export const VIDEOS = {\n${body}\n};\n`;
-
 console.log(`\n${hits} av ${Object.keys(CANDIDATES).length} tekniker fick en verifierad video.`);
-
-if (DRY) {
-  console.log('--dry angavs, src/videos.js lämnas orörd.');
-} else {
-  writeFileSync(TARGET, out);
-  console.log('Skrev src/videos.js. Titta igenom titlarna ovan innan du committar.');
-}
+writeOut(chosen);
