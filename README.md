@@ -24,8 +24,11 @@ Node 18 eller senare.
 
 ```
 index.html
+.github/workflows/
+  deploy.yml              bygger och publicerar till GitHub Pages
 assets/icon.svg           källa till appikonen
 public/
+  .nojekyll               hindrar GitHub Pages från att köra Jekyll
   manifest.json           PWA-manifest
   sw.js                   service worker, cachar bara appens eget skal
   icons/                  färdiggenererade ikoner
@@ -122,33 +125,54 @@ peka ut den med `CHROME_PATH=/sökväg/till/chrome npm run icons`.
 Appen startar då i helskärm utan Safaris adressfält, med bältesikonen och mörk
 statusrad. Manifestet anger `display: standalone` och `theme_color` `#0d111e`.
 
-Service workern cachar bara appens egna filer så att den startar utan nät.
-Allt som ligger på annan domän, YouTube inräknat, går alltid direkt till nätet
-och hamnar aldrig i cachen.
+Service workern cachar bara appens egna filer så att den startar utan nät. Vid
+installationen läser den ut de hashade filnamnen under `assets/` ur
+`index.html`, så precachen träffar rätt bygge. Allt som ligger på annan domän,
+YouTube inräknat, går alltid direkt till nätet och hamnar aldrig i cachen.
 
-## Deploy till Vercel
+## Deploy
 
-Repot innehåller en `vercel.json` med SPA-rewrite och cache-headers.
+Bygget är sökvägsoberoende. `vite.config.js` sätter `base: './'` och manifest,
+service worker och ikoner refereras relativt, så samma `dist` fungerar i roten
+på en domän, under en underkatalog som `/Judoteacher/` och på en egen domän.
+Du behöver inte ändra någon sökväg när du byter värd.
 
-**Via webben**
+### GitHub Pages
 
-1. Pusha repot till GitHub.
-2. Gå till [vercel.com/new](https://vercel.com/new) och importera repot.
-3. Vercel känner igen Vite av sig självt. Kontrollera annars:
+`.github/workflows/deploy.yml` bygger och publicerar automatiskt.
+
+1. Gå till **Settings, Pages** i repot och sätt **Source** till
+   **GitHub Actions**. Det är den inställning workflowen förutsätter.
+2. Pusha till `main`, eller kör workflowen manuellt under fliken **Actions**
+   med **Run workflow**.
+3. Sajten hamnar på `https://<användare>.github.io/<repo>/`, alltså
+   `https://drdev1337.github.io/Judoteacher/` för det här repot.
+
+Workflowen kör `npm ci` och `npm run build` på Node 20 och laddar upp `dist`.
+Den triggar på `main`, `master` och på utvecklingsgrenen, plus manuellt.
+`public/.nojekyll` följer med i bygget så att Pages inte kör innehållet genom
+Jekyll.
+
+Sätter du en egen domän under **Settings, Pages** fungerar bygget som det är,
+eftersom sökvägarna är relativa.
+
+### Vercel
+
+Repot innehåller också en `vercel.json` med SPA-rewrite och cache-headers.
+
+1. Gå till [vercel.com/new](https://vercel.com/new) och importera repot.
+2. Vercel känner igen Vite av sig självt. Kontrollera annars:
    Framework Preset `Vite`, Build Command `npm run build`, Output Directory
    `dist`.
-4. Tryck **Deploy**. Inga miljövariabler behövs.
+3. Tryck **Deploy**. Inga miljövariabler behövs.
 
-**Via CLI**
+Eller via CLI:
 
 ```bash
 npm i -g vercel
 vercel          # förhandsversion
 vercel --prod   # skarpt
 ```
-
-Varje push till huvudgrenen ger en ny produktionsdeploy, varje pull request en
-egen förhandsversion.
 
 ## Innehåll och upphovsrätt
 

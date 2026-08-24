@@ -12,6 +12,8 @@ createRoot(document.getElementById('root')).render(
 // Service worker: cachar bara appens egna filer, aldrig YouTube.
 if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    // BASE_URL följer vite-konfigurationens base, så registreringen hamnar
+    // rätt både i roten och under en underkatalog.
+    navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`).catch(() => {});
   });
 }

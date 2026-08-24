@@ -1,14 +1,31 @@
 // Minimal service worker. Cachar bara appens eget skal så att appen startar
 // offline. Allt som ligger på en annan domän, YouTube inräknat, går alltid
 // direkt till nätet och hamnar aldrig i cachen.
+//
+// Alla sökvägar är relativa till den här filen, så samma bygge fungerar både
+// i roten och under en underkatalog som /Judoteacher/ på GitHub Pages.
 const CACHE = 'judostudy-v1';
-const SHELL = ['/', '/index.html', '/manifest.json', '/icons/icon-192.png', '/icons/icon-512.png'];
+const SHELL = ['./', './index.html', './manifest.json', './icons/icon-192.png', './icons/icon-512.png'];
+const FALLBACK = new URL('./index.html', self.location).href;
+
+// Filnamnen under assets/ har en innehållshash och kan inte skrivas in här.
+// Vi läser dem ur index.html i stället, så precachen träffar rätt bygge.
+async function shellUrls() {
+  const urls = SHELL.slice();
+  try {
+    const res = await fetch(FALLBACK, { cache: 'no-cache' });
+    const html = await res.text();
+    for (const m of html.matchAll(/(?:src|href)="(\.\/assets\/[^"]+)"/g)) urls.push(m[1]);
+  } catch {
+    // Ingen nätåtkomst vid installationen, skalet cachas ändå vid nästa besök.
+  }
+  return urls;
+}
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches
-      .open(CACHE)
-      .then((c) => c.addAll(SHELL))
+    shellUrls()
+      .then((urls) => caches.open(CACHE).then((c) => c.addAll(urls)))
       .catch(() => undefined)
       .then(() => self.skipWaiting())
   );
@@ -34,7 +51,7 @@ self.addEventListener('fetch', (event) => {
   // Navigeringar: nät först, cache som reserv när man är offline.
   if (req.mode === 'navigate') {
     event.respondWith(
-      fetch(req).catch(() => caches.match('/index.html').then((r) => r || Response.error()))
+      fetch(req).catch(() => caches.match(FALLBACK).then((r) => r || Response.error()))
     );
     return;
   }
