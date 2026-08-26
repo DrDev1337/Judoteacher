@@ -2,6 +2,7 @@ import { TECHNIQUES } from '../data/techniques.js';
 import { C, R, btn, btnPrimary, card } from '../theme.js';
 import { Label, Pill, Bullets, Steps, LinkRow } from './ui.jsx';
 import VideoEmbed from './VideoEmbed.jsx';
+import Illustration from './Illustration.jsx';
 
 const STEPS = [
   { key: 'namn', title: 'Namnet' },
@@ -116,6 +117,7 @@ export default function StudyMode({ study, setStudy, mastered, toggleMastered })
         {step === 1 && (
           <>
             <VideoEmbed technique={t} />
+            <Illustration technique={t} />
             <p style={{ margin: 0, fontSize: 16, lineHeight: 1.65 }}>{t.how}</p>
             <LinkRow technique={t} />
           </>

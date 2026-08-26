@@ -1,0 +1,9 @@
+Lägg dina teknikbilder här och peka ut dem i src/illustrations.js.
+
+Filnamnet spelar ingen roll, men teknikens id är enklast att hålla reda på:
+  o-goshi.jpg, o-uchi-gari.jpg, kuzure-kesa-gatame.jpg och så vidare.
+
+Liggande format passar bäst, appen visar bilden i 4:3 och beskär den inte.
+Håll filerna under ett par hundra kilobyte, appen används mest på mobil.
+
+Lägg bara in bilder du har rätt att använda.

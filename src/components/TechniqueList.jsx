@@ -3,6 +3,7 @@ import { TECHNIQUES } from '../data/techniques.js';
 import { C, R, card } from '../theme.js';
 import { Chip, Pill, Label, Bullets, Steps, LinkRow } from './ui.jsx';
 import VideoEmbed from './VideoEmbed.jsx';
+import Illustration from './Illustration.jsx';
 
 const FILTERS = [
   { key: 'alla', label: 'Alla', test: () => true },
@@ -127,6 +128,7 @@ export default function TechniqueList({ mastered, toggleMastered }) {
                 </div>
 
                 <VideoEmbed technique={t} compact />
+                <Illustration technique={t} />
                 <LinkRow technique={t} />
 
                 <p style={{ margin: 0, fontSize: 15, lineHeight: 1.65 }}>{t.how}</p>

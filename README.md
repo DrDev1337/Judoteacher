@@ -38,6 +38,7 @@ scripts/
   pick-videos.mjs         provar kandidaterna och skriver src/videos.js
   verify-videos.mjs       kontrollerar video-id mot YouTube
 src/
+  illustrations.js        egna teknikbilder, tomt från början
   main.jsx                startpunkt, registrerar service workern
   App.jsx                 skal, flikar, progress
   theme.js                designtokens
@@ -47,7 +48,7 @@ src/
   data/glossary.js        ordlistan
   components/
     StudyMode.jsx TechniqueList.jsx Flashcards.jsx Quiz.jsx
-    Glossary.jsx VideoEmbed.jsx ui.jsx
+    Glossary.jsx VideoEmbed.jsx Illustration.jsx ui.jsx
 ```
 
 ## Sparad progress
@@ -152,8 +153,38 @@ bildanrop per synlig ruta, men inget anrop till spelaren. Rutan är alltid 16:9
 och tar sin plats direkt, så varken bilden eller inbäddningen orsakar hopp i
 layouten.
 
-Illustrationerna på judoguide.se hotlänkas eller kopieras inte, de är
-upphovsrättsskyddade. Varje teknik länkar dit i stället.
+## Illustrationer
+
+Varje teknik kan ha en egen bild, som visas under videon både i Studera steg 2
+och i Tekniker. Alla tolv är `null` från början, och då renderas ingenting.
+
+Lägg till en bild i två steg:
+
+1. Lägg filen i `public/illustrations/`, till exempel `o-goshi.jpg`.
+2. Peka ut den i `src/illustrations.js`:
+
+   ```js
+   'o-goshi': 'illustrations/o-goshi.jpg',
+   ```
+
+Sökvägen är relativ till appens bas, så den fungerar både i roten och under
+`/Judoteacher/`. En fullständig `https://`-adress fungerar också, men då hämtas
+bilden från den sajten varje gång någon öppnar tekniken, på deras bandbredd,
+och slutar fungera om de flyttar filen.
+
+Vill du ange fotograf eller källa fyller du i `CREDITS` i samma fil, texten
+visas som bildtext under bilden.
+
+Går bilden inte att hämta försvinner den tyst, så en felstavad sökväg lämnar
+inget hål i sidan. Alt-texten skrivs automatiskt från teknikens namn.
+
+Liggande format passar bäst, bilden visas i full bredd utan beskärning. Håll
+filerna små, appen används mest på mobil.
+
+**Upphovsrätt:** lägg bara in bilder du har rätt att använda, egna foton, egna
+teckningar, eller bilder du fått tillstånd att publicera. Illustrationerna på
+judoguide.se är deras, och varken kopiering eller hotlänkning är fri att göra
+utan att fråga dem. Varje teknik länkar dit i stället.
 
 ## Ikoner
 
