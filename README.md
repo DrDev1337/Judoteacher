@@ -139,9 +139,21 @@ aldrig ett id, en trasig inbäddning är sämre än sökläkken.
 Notera att `mune-gatame` ibland ligger under varianter av
 `kuzure-yoko-shiho-gatame`, välj den demonstration som ligger närmast.
 
-Inbäddningen laddas först när man trycker på den, så inga YouTube-anrop görs
-innan dess. Rutan är alltid 16:9 och tar sin plats direkt, så inbäddningen
-orsakar inget hopp i layouten.
+### Förhandsbild och dataåtgång
+
+Rutan visar YouTubes förhandsbild (`i.ytimg.com/vi/<id>/hqdefault.jpg`) så att
+man ser vilken teknik det är utan att spela upp något. Bilden är några tiotal
+kilobyte mot spelarens dryga halva megabyte, och laddas `lazy`, så bara de
+rutor man faktiskt rullar fram hämtas. Går bilden inte att hämta faller rutan
+tillbaka på enbart namn och play-knapp, utan trasig bildikon.
+
+Själva spelaren laddas fortfarande först vid tryck. Innan dess görs alltså ett
+bildanrop per synlig ruta, men inget anrop till spelaren. Rutan är alltid 16:9
+och tar sin plats direkt, så varken bilden eller inbäddningen orsakar hopp i
+layouten.
+
+Illustrationerna på judoguide.se hotlänkas eller kopieras inte, de är
+upphovsrättsskyddade. Varje teknik länkar dit i stället.
 
 ## Ikoner
 

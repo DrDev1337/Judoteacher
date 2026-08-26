@@ -25,10 +25,18 @@ function PlayIcon() {
 /**
  * Klick för att ladda: iframen skapas först när användaren trycker på
  * platshållaren, så att mobildata inte går åt i onödan.
+ *
+ * Platshållaren visar YouTubes förhandsbild, så att man ser vilken teknik
+ * det är utan att spela upp något. Bilden är några tiotal kilobyte mot
+ * spelarens dryga halva megabyte, och laddas lazy så att bara de rutor man
+ * faktiskt rullar fram hämtas. Går bilden inte att hämta faller rutan
+ * tillbaka på enbart namn och play-knapp.
+ *
  * Saknas ett id i VIDEOS visas i stället sökläkken till YouTube.
  */
 export default function VideoEmbed({ technique, compact = false }) {
   const [playing, setPlaying] = useState(false);
+  const [thumbBroken, setThumbBroken] = useState(false);
   const id = VIDEOS[technique.id];
 
   if (!id) {
@@ -76,6 +84,35 @@ export default function VideoEmbed({ technique, compact = false }) {
           textAlign: 'left',
         }}
       >
+        {!thumbBroken && (
+          <img
+            src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            decoding="async"
+            onError={() => setThumbBroken(true)}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+            }}
+          />
+        )}
+        {!thumbBroken && (
+          <span
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background:
+                'linear-gradient(to top, rgba(13,17,30,0.85) 0%, rgba(13,17,30,0.35) 45%, rgba(13,17,30,0.15) 100%)',
+            }}
+          />
+        )}
         <span
           style={{
             position: 'absolute',
@@ -101,10 +138,23 @@ export default function VideoEmbed({ technique, compact = false }) {
           >
             <PlayIcon />
           </span>
-          <span style={{ fontSize: compact ? 14 : 15, fontWeight: 700, color: C.text }}>
+          <span
+            style={{
+              fontSize: compact ? 14 : 15,
+              fontWeight: 700,
+              color: C.white,
+              textShadow: '0 1px 6px rgba(0,0,0,0.7)',
+            }}
+          >
             {technique.jp}
           </span>
-          <span style={{ fontSize: 12, color: C.faint }}>
+          <span
+            style={{
+              fontSize: 12,
+              color: thumbBroken ? C.faint : 'rgba(255,255,255,0.82)',
+              textShadow: thumbBroken ? 'none' : '0 1px 5px rgba(0,0,0,0.7)',
+            }}
+          >
             Tryck för att ladda videon
           </span>
         </span>
